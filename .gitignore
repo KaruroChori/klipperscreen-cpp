@@ -1,0 +1,5 @@
+/builddir/
+/subprojects/*
+!/subprojects/packagefiles
+!/subprojects/*.wrap
+/run
