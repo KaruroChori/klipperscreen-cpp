@@ -1,9 +1,8 @@
 [wrap-git]
 url = https://github.com/lvgl/lvgl
-revision = release/v8.3
+revision = release/v9.0
 clone-recursive = true
 depth = 1
-method = cmake
 patch_directory = lvgl
 [provide]
 lvgl = lvgl_dep
