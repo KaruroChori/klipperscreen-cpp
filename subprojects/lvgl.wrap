@@ -6,3 +6,6 @@ depth = 1
 patch_directory = lvgl
 [provide]
 lvgl = lvgl_dep
+lvgl_demos = lvgl_demos_dep
+lvgl_examples = lvgl_examples_dep
+lvgl_thorvg = lvgl_thorvg_dep
