@@ -28,7 +28,7 @@ void test_lvgl(){
         usleep(5000);
     }
 
-    return;
+    return; 
 }
 
 /*

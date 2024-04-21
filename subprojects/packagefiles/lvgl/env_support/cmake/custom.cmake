@@ -27,15 +27,25 @@ target_compile_definitions(
   lvgl PUBLIC $<$<BOOL:${LV_LVGL_H_INCLUDE_SIMPLE}>:LV_LVGL_H_INCLUDE_SIMPLE>
               $<$<BOOL:${LV_CONF_INCLUDE_SIMPLE}>:LV_CONF_INCLUDE_SIMPLE>)
 
+# Add definition of LV_CONF_PATH only if needed
+if(LV_CONF_PATH)
+  target_compile_definitions(lvgl PUBLIC LV_CONF_PATH=${LV_CONF_PATH})
+endif()
+
+# Add definition of LV_CONF_SKIP only if needed
+if(LV_CONF_SKIP)
+  target_compile_definitions(lvgl PUBLIC LV_CONF_SKIP=1)
+endif()
+
 # Include root and optional parent path of LV_CONF_PATH
 target_include_directories(lvgl SYSTEM PUBLIC ${LVGL_ROOT_DIR} ${LV_CONF_DIR})
 
-# Include /examples folder
 
 if(NOT LV_CONF_BUILD_DISABLE_THORVG_INTERNAL)
     add_library(lvgl_thorvg ${THORVG_SOURCES})
     add_library(lvgl::thorvg ALIAS lvgl_thorvg)
     target_include_directories(lvgl_thorvg SYSTEM PUBLIC ${LVGL_ROOT_DIR}/src/libs/thorvg)
+    target_link_libraries(lvgl_thorvg PUBLIC lvgl)
     if(LV_CONF_PATH)
         target_compile_definitions(lvgl_thorvg PUBLIC LV_CONF_PATH=${LV_CONF_PATH})
     endif()
@@ -77,18 +87,11 @@ if("${INC_INSTALL_DIR}" STREQUAL "")
   set(INC_INSTALL_DIR "include/lvgl")
 endif()
 
-
 install(
   DIRECTORY "${CMAKE_SOURCE_DIR}/src"
   DESTINATION "${CMAKE_INSTALL_PREFIX}/${INC_INSTALL_DIR}/"
   FILES_MATCHING
   PATTERN "*.h")
-
-install(
-  FILES "${LV_CONF_PATH}"
-  DESTINATION "${CMAKE_INSTALL_PREFIX}/${INC_INSTALL_DIR}/../"
-  RENAME "lv_conf.h"
-  OPTIONAL)
 
 # install example headers
 if(NOT LV_CONF_BUILD_DISABLE_EXAMPLES)
@@ -115,12 +118,13 @@ install(
   FILES "${CMAKE_BINARY_DIR}/lvgl.pc"
   DESTINATION "${LIB_INSTALL_DIR}/pkgconfig/")
 
+# Install library
 set_target_properties(
   lvgl
   PROPERTIES OUTPUT_NAME lvgl
              ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
              LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-             RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+             RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
              PUBLIC_HEADER "${LVGL_PUBLIC_HEADERS}")
 
 install(
@@ -140,7 +144,6 @@ if(NOT LV_CONF_BUILD_DISABLE_THORVG_INTERNAL)
                LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
                RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
                PUBLIC_HEADER "${LVGL_PUBLIC_HEADERS}")
-  
   install(
     TARGETS lvgl_thorvg
     ARCHIVE DESTINATION "${LIB_INSTALL_DIR}"
@@ -158,7 +161,6 @@ if(NOT LV_CONF_BUILD_DISABLE_DEMOS)
                LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
                RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
                PUBLIC_HEADER "${LVGL_PUBLIC_HEADERS}")
-  
   install(
     TARGETS lvgl_demos
     ARCHIVE DESTINATION "${LIB_INSTALL_DIR}"
@@ -176,8 +178,8 @@ if(NOT LV_CONF_BUILD_DISABLE_EXAMPLES)
                LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
                RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
                PUBLIC_HEADER "${LVGL_PUBLIC_HEADERS}")
-  
-  install(
+
+install(
     TARGETS lvgl_examples
     ARCHIVE DESTINATION "${LIB_INSTALL_DIR}"
     LIBRARY DESTINATION "${LIB_INSTALL_DIR}"

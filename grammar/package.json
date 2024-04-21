@@ -1,0 +1,45 @@
+{
+  "name": "tree-sitter-gluegunfw",
+  "version": "1.0.0",
+  "description": "Grammar for the gluegun fw",
+  "main": "index.js",
+  "types": "bindings/node",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "node-gyp-build",
+    "prebuildify": "prebuildify --napi --strip"
+  },
+  "author": "karurochari",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "node-addon-api": "^7.1.0",
+    "node-gyp-build": "^4.8.0"
+  },
+  "peerDependencies": {
+    "tree-sitter": "^0.21.0"
+  },
+  "peerDependenciesMeta": {
+    "tree_sitter": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.0",
+    "tree-sitter-cli": "^0.22.5",
+    "prebuildify": "^6.0.0"
+  },
+  "files": [
+    "grammar.js",
+    "binding.gyp",
+    "prebuilds/**",
+    "bindings/node/*",
+    "queries/*",
+    "src/**"
+  ],
+  "tree-sitter": [
+    {
+      "scope": "source.gluegunfw",
+      "injection-regex": "^gluegunfw$"
+    }
+  ]
+}
